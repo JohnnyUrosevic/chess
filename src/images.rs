@@ -5,7 +5,7 @@ use ggez::{Context, GameResult};
 use shakmaty::{Color, Role, Piece};
 
 pub struct Images {
-    piece_to_image: HashMap<Piece, graphics::Image>,
+    pub piece_to_image: HashMap<Piece, graphics::Image>,
 }
 
 impl Images {

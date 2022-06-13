@@ -38,7 +38,7 @@ impl From<GridPosition> for mint::Point2<f32> {
 
 impl From<GridPosition> for Square {
     fn from(pos: GridPosition) -> Self {
-        let file_char = ('A'..='H')
+        let file_char = ('a'..='h')
             .nth(pos.x as usize)
             .expect("X out of bounds");
         let file = File::from_char(file_char).unwrap();
@@ -60,7 +60,7 @@ impl From<Square> for GridPosition {
         let (file, rank) = square.coords();
 
         let file_char = file.char();
-        let x = ('A'..='H')
+        let x = ('a'..='h')
             .position(|c| c == file_char)
             .unwrap();
 
