@@ -2,10 +2,10 @@ use std::{collections::{HashMap}};
 
 use ggez::{graphics};
 use ggez::{Context, GameResult};
-use shakmaty::{Color, Role};
+use shakmaty::{Color, Role, Piece};
 
 pub struct Images {
-    piece_to_image: HashMap<(Color, Role), graphics::Image>,
+    piece_to_image: HashMap<Piece, graphics::Image>,
 }
 
 impl Images {
@@ -23,10 +23,10 @@ impl Images {
             };
 
             let white_image = graphics::Image::new(ctx, format!("w{}.png", role_char))?;
-            map.insert((Color::White, role), white_image);
+            map.insert(Piece{color: Color::White, role}, white_image);
 
             let black_image = graphics::Image::new(ctx, format!("b{}.png", role_char))?;
-            map.insert((Color::Black, role), black_image);
+            map.insert(Piece{color: Color::Black, role}, black_image);
         }
 
         Ok(Images {piece_to_image: map})

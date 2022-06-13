@@ -5,7 +5,7 @@ pub mod grid_position;
 pub mod images;
 
 use ggez::{event, graphics, Context, GameResult};
-use shakmaty::{Square, Move, Role};
+use shakmaty::{Square, Move, Role, Chess};
 
 use util::{GRID_SIZE, SCREEN_SIZE};
 use grid_position::{GridPosition};
@@ -15,12 +15,14 @@ use std::path;
 
 struct GameState {
     images: Images,
+    position: Chess,
 }
 
 impl GameState {
     pub fn new(ctx: &mut Context) -> GameResult<Self> {
         let images = Images::new(ctx)?;
-        Ok(GameState {images})
+        let position = Chess::default();
+        Ok(GameState {images, position})
     }
 }
 
