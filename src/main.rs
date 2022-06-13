@@ -8,31 +8,35 @@ pub mod grid_position;
 pub mod images;
 
 use ggez::{event, graphics, Context, GameResult, input};
-use shakmaty::{Chess, Position, Square};
+use shakmaty::{Chess, Position, Square, Move};
 
 use util::{GRID_SIZE, GRID_CELL_SIZE, SCREEN_SIZE};
 use grid_position::{GridPosition};
 use images::{Images};
 
 use std::path;
+use std::collections::{HashSet};
 
 
 struct GameState {
     images: Images,
     position: Chess,
     selected: Option<Square>,
+    preview_moves: HashSet<Square>
 }
 
 impl GameState {
     pub fn new(ctx: &mut Context) -> GameResult<Self> {
         let images = Images::new(ctx)?;
         let position = Chess::default();
-        Ok(GameState {images, position, selected: None})
+        let selected = None;
+        let preview_moves = HashSet::new();
+        Ok(GameState {images, position, selected, preview_moves})
     }
 }
 
 impl event::EventHandler for GameState {
-    fn update(&mut self, ctx: &mut Context) -> GameResult {
+    fn update(&mut self, _ctx: &mut Context) -> GameResult {
         Ok(())
     }
 
@@ -65,6 +69,8 @@ impl event::EventHandler for GameState {
                     graphics::Mesh::new_rectangle(ctx, graphics::DrawMode::fill(), rect, color)?;
                 graphics::draw(ctx, &rectangle, (mint::Point2 { x: 0.0, y: 0.0 },))?;
 
+
+
                 if let Some(piece) = board.piece_at(square) {
                     let image = self.images.piece_to_image.get(&piece).unwrap();
 
@@ -73,6 +79,17 @@ impl event::EventHandler for GameState {
                         .dest(pos)
                         .scale(mint::Vector2{x: 0.5, y: 0.5});
                     graphics::draw(ctx, image, params)?;
+                }
+
+                if self.preview_moves.contains(&square) {
+                    let mut pos: mint::Point2<f32> = grid_position.into();
+
+                    pos.x += (GRID_CELL_SIZE.0 / 2) as f32;
+                    pos.y += (GRID_CELL_SIZE.1 / 2) as f32;
+
+                    let circle =
+                        graphics::Mesh::new_circle(ctx, graphics::DrawMode::fill(), pos, 20.0, 0.01, selected_color)?;
+                    graphics::draw(ctx, &circle, (mint::Point2 { x: 0.0, y: 0.0 },))?;
                 }
             }
         }
@@ -90,12 +107,26 @@ impl event::EventHandler for GameState {
         // clicking the already selected square should remove the selection
         if let Some(selected) = self.selected && selected == selected_square {
             self.selected = None;
+            self.preview_moves = HashSet::new();
+            return;
+        }
+
+        let board = self.position.board();
+        if let Some(piece) = board.piece_at(selected_square) && piece.color.is_white() {
+            self.selected = Some(selected_square);
+
+            self.preview_moves = self.position.legal_moves()
+                .iter()
+                .filter(|x| x.from().contains(&selected_square))
+                .map(|x| x.to())
+                .collect();
         }
         else {
-            self.selected = Some(selected_square);
+            self.selected = None;
+            self.preview_moves = HashSet::new();
         }
-    }
 
+    }
 }
 
 fn main() -> GameResult {
