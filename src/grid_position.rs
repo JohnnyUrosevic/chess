@@ -43,7 +43,7 @@ impl From<GridPosition> for Square {
             .expect("X out of bounds");
         let file = File::from_char(file_char).unwrap();
 
-        let rank = Rank::new(pos.y as u32);
+        let rank = Rank::new(7 - pos.y as u32);
 
         Square::from_coords(file, rank)
     }
@@ -64,6 +64,6 @@ impl From<Square> for GridPosition {
             .position(|c| c == file_char)
             .unwrap();
 
-        GridPosition { x: x as u32, y: rank as u32 }
+        GridPosition { x: x as u32, y: 7 - rank as u32 }
     }
 }
