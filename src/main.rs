@@ -8,7 +8,7 @@ pub mod grid_position;
 pub mod images;
 
 use ggez::{event, graphics, Context, GameResult, input};
-use shakmaty::{Chess, Position, Square, Move};
+use shakmaty::{Chess, Position, Square};
 
 use util::{GRID_SIZE, GRID_CELL_SIZE, SCREEN_SIZE};
 use grid_position::{GridPosition};
@@ -112,7 +112,7 @@ impl event::EventHandler for GameState {
         }
 
         let board = self.position.board();
-        if let Some(piece) = board.piece_at(selected_square) && piece.color.is_white() {
+        if let Some(piece) = board.piece_at(selected_square) && piece.color == self.position.turn() {
             self.selected = Some(selected_square);
 
             self.preview_moves = self.position.legal_moves()
@@ -122,6 +122,11 @@ impl event::EventHandler for GameState {
                 .collect();
         }
         else {
+            if let Some(selected_move) = self.position.legal_moves()
+                .iter()
+                .find(|x| x.from() == self.selected && x.to() == selected_square) {
+                    self.position.play_unchecked(selected_move);
+            }
             self.selected = None;
             self.preview_moves = HashSet::new();
         }
