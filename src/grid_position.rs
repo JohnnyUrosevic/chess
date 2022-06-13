@@ -27,12 +27,12 @@ impl From<GridPosition> for graphics::Rect {
     }
 }
 
-impl From<GridPosition> for cgmath::Point2<usize> {
+impl From<GridPosition> for mint::Point2<f32> {
     fn from(pos: GridPosition) -> Self {
-        cgmath::Point2::new(
-            pos.x as usize * GRID_CELL_SIZE.0 as usize,
-            pos.y as usize * GRID_CELL_SIZE.1 as usize,
-        )
+        mint::Point2 {
+            x: pos.x as f32 * GRID_CELL_SIZE.0 as f32,
+            y: pos.y as f32 * GRID_CELL_SIZE.1 as f32,
+        }
     }
 }
 
