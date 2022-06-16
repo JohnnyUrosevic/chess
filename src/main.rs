@@ -43,9 +43,9 @@ impl event::EventHandler for GameState {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         graphics::clear(ctx, [0.0, 0.0, 0.0, 1.0].into());
 
-        let dark_color = [0.0, 0.0, 1.0, 1.0].into();
-        let light_color = [1.0, 1.0, 1.0, 1.0].into();
-        let selected_color = [0.0, 1.0, 0.0, 1.0].into();
+        let dark_color = (60, 80, 245, 255).into();
+        let light_color = (255, 255, 255, 255).into();
+        let selected_color = (5, 67, 117, 255).into();
 
         let board = self.position.board();
 
